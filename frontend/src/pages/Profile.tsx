@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Header } from '../components/common/Header';
 import { Footer } from '../components/common/Footer';
-import { User } from '../types';
 import { useAppStore } from '../store';
 import { Loader } from '../components/common/Loader';
 import { formatDateTime } from '../utils/format';
@@ -14,7 +13,6 @@ export const Profile: React.FC = () => {
   const navigate = useNavigate();
   const user = useAppStore((state) => state.user);
   const setUser = useAppStore((state) => state.setUser);
-  const [isLoading, setIsLoading] = useState(false);
   const [referralStats, setReferralStats] = useState<{
     total_referrals: number;
     referral_code: string;
@@ -197,7 +195,7 @@ export const Profile: React.FC = () => {
             </button>
 
             <a
-              href={`https://t.me/${import.meta.env.VITE_BOT_SUPPORT_USERNAME || 'support'}`}
+              href={`https://t.me/${(import.meta as any).env.VITE_BOT_SUPPORT_USERNAME || 'support'}`}
               className="btn btn-outline-success w-100 mb-2"
               target="_blank"
               rel="noopener noreferrer"

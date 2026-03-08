@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Subscription } from '../../types';
-import { formatTraffic, formatDate, formatPercent } from '../../utils/format';
+import { formatTraffic, formatDate } from '../../utils/format';
 
 interface SubscriptionCardProps {
   subscription: Subscription;

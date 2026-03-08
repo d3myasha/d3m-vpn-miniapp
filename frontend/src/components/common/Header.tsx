@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { useAppStore } from '../../store';
-import { TelegramWebApp } from '../../types';
 
 interface HeaderProps {
   title?: string;

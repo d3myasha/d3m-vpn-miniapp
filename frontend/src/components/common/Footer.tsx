@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { TelegramWebApp } from '../../types';
 
 export const Footer: React.FC = () => {
   const location = useLocation();

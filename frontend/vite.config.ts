@@ -19,3 +19,14 @@ export default defineConfig({
     sourcemap: true,
   },
 })
+
+// Для TypeScript
+declare module 'vite' {
+  interface ImportMetaEnv {
+    readonly VITE_BOT_SUPPORT_USERNAME: string
+  }
+
+  interface ImportMeta {
+    readonly env: ImportMetaEnv
+  }
+}
