@@ -141,6 +141,30 @@ health() {
     docker compose ps
 }
 
+# Запуск с образами из GHCR
+ghcr_up() {
+    print_info "Запуск с образами из GitHub Container Registry..."
+
+    # Проверяем наличие .env
+    if [ ! -f .env ]; then
+        print_warning "Файл .env не найден. Запускаем ghcr-login..."
+        ./scripts/ghcr-login.sh
+    fi
+
+    # Проверяем наличие docker-compose.ghcr.yml
+    if [ ! -f docker-compose.ghcr.yml ]; then
+        print_error "Файл docker-compose.ghcr.yml не найден"
+        exit 1
+    fi
+
+    # Запускаем
+    docker compose -f docker-compose.ghcr.yml up -d
+    print_info "Проект запущен с образами из GHCR!"
+    print_info "Frontend: http://localhost"
+    print_info "Backend API: http://localhost/api"
+    print_info "API Docs: http://localhost/docs"
+}
+
 # Вывод справки
 help() {
     echo "D3M VPN MiniApp - Управление проектом"
@@ -157,12 +181,15 @@ help() {
     echo "  install     Установка зависимостей"
     echo "  dev         Запуск в режиме разработки"
     echo "  health      Проверка состояния сервисов"
+    echo "  ghcr-login  Вход в GitHub Container Registry"
+    echo "  ghcr-up     Запуск с образами из GHCR"
     echo "  help        Вывод этой справки"
     echo ""
     echo "Примеры:"
     echo "  $0 start"
     echo "  $0 logs backend"
-    echo "  $0 stop"
+    echo "  $0 ghcr-login"
+    echo "  $0 ghcr-up"
 }
 
 # Основная логика
@@ -193,6 +220,12 @@ case "${1:-help}" in
         ;;
     health)
         health
+        ;;
+    ghcr-login)
+        ./scripts/ghcr-login.sh
+        ;;
+    ghcr-up)
+        ghcr_up
         ;;
     help)
         help

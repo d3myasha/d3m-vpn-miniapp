@@ -1,0 +1,105 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/d3m-vpn-miniapp
+
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: https://${{ vars.APP_DOMAIN || 'your-domain.com' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to server
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+            set -e
+
+            # Переходим в директорию проекта
+            cd ${{ secrets.DEPLOY_PATH || '/opt/d3m-vpn-miniapp' }}
+
+            # Создаём .env файл если не существует
+            if [ ! -f .env ]; then
+              echo "Creating .env file..."
+              cp .env.example .env
+            fi
+
+            # Обновляем переменные для GHCR
+            echo "REGISTRY=ghcr.io" >> .env
+            echo "GITHUB_OWNER=${{ github.repository_owner }}" >> .env
+            echo "IMAGE_TAG=${{ github.ref_name }}" >> .env
+
+            # Pull latest images
+            echo "Pulling Docker images..."
+            docker compose -f docker-compose.ghcr.yml pull
+
+            # Stop old containers
+            echo "Stopping old containers..."
+            docker compose -f docker-compose.ghcr.yml down
+
+            # Start new containers
+            echo "Starting new containers..."
+            docker compose -f docker-compose.ghcr.yml up -d
+
+            # Clean up old images
+            echo "Cleaning up old images..."
+            docker image prune -af --filter "until=24h"
+
+            # Check health
+            echo "Checking health..."
+            sleep 10
+            curl -f http://localhost/health || exit 1
+
+            echo "Deployment completed successfully!"
+          EOF
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "✅ Deployment to ${{ github.event.inputs.environment || 'production' }} completed successfully!"
+          echo "Version: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          exit 1

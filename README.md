@@ -163,8 +163,26 @@ cp .env.example .env
 
 ### 3. Запуск через Docker Compose
 
+**Вариант A: Локальная сборка**
+
 ```bash
 docker compose up -d
+```
+
+**Вариант B: Использование образов из GitHub Container Registry**
+
+```bash
+# Вход в GHCR
+./scripts/ghcr-login.sh
+
+# Или через Makefile.sh
+./Makefile.sh ghcr-login
+
+# Запуск с GHCR образами
+docker compose -f docker-compose.ghcr.yml up -d
+
+# Или через Makefile.sh
+./Makefile.sh ghcr-up
 ```
 
 ### 4. Проверка статуса
