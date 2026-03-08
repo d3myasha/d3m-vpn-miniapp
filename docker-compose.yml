@@ -36,13 +36,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Backend API
+  # Backend API (из GitHub Container Registry)
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ghcr.io/d3myasha/d3m-vpn-miniapp/backend:latest
     container_name: d3mvpn-backend
     restart: unless-stopped
+    pull_policy: always
     environment:
       APP_DOMAIN: ${APP_DOMAIN:-localhost:3000}
       APP_HOST: 0.0.0.0
@@ -89,23 +88,23 @@ services:
       retries: 3
       start_period: 40s
 
-  # Frontend
+  # Frontend (из GitHub Container Registry)
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ghcr.io/d3myasha/d3m-vpn-miniapp/frontend:latest
     container_name: d3mvpn-frontend
     restart: unless-stopped
+    pull_policy: always
     depends_on:
       - backend
     networks:
       - d3mvpn-network
 
-  # Nginx Reverse Proxy
+  # Nginx Reverse Proxy (из GitHub Container Registry)
   nginx:
-    image: nginx:alpine
+    image: ghcr.io/d3myasha/d3m-vpn-miniapp/nginx:latest
     container_name: d3mvpn-nginx
     restart: unless-stopped
+    pull_policy: always
     ports:
       - "${APP_PORT:-80}:80"
       - "${APP_SSL_PORT:-443}:443"
