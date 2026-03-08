@@ -150,7 +150,7 @@ d3m-vpn-miniapp/
 ### 1. Клонирование
 
 ```bash
-git clone https://github.com/yourusername/d3m-vpn-miniapp.git
+git clone https://github.com/d3myasha/d3m-vpn-miniapp.git
 cd d3m-vpn-miniapp
 ```
 
