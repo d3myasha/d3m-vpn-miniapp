@@ -1,0 +1,149 @@
+/** Глобальные стили */
+
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+  --tg-theme-bg-color: #ffffff;
+  --tg-theme-text-color: #000000;
+  --tg-theme-button-color: #0d6efd;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-secondary-bg-color: #f8f9fa;
+  --tg-theme-hint-color: #999999;
+  --tg-theme-link-color: #0d6efd;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  overflow-x: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Адаптация под тему Telegram */
+body {
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+}
+
+/* Кастомизация Bootstrap компонентов */
+.btn-primary {
+  background-color: var(--tg-theme-button-color);
+  border-color: var(--tg-theme-button-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--tg-theme-button-color);
+  opacity: 0.9;
+}
+
+.text-primary {
+  color: var(--tg-theme-button-color) !important;
+}
+
+/* Скроллбар */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--tg-theme-secondary-bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--tg-theme-hint-color);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tg-theme-text-color);
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Утилиты */
+.text-small {
+  font-size: 0.875rem;
+}
+
+.text-muted-light {
+  color: var(--tg-theme-hint-color);
+}
+
+/* Модальные окна */
+.modal-content {
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+}
+
+.modal-header {
+  border-bottom-color: var(--tg-theme-secondary-bg-color);
+}
+
+.modal-footer {
+  border-top-color: var(--tg-theme-secondary-bg-color);
+}
+
+/* List group */
+.list-group-item {
+  background-color: transparent;
+  color: var(--tg-theme-text-color);
+}
+
+/* Cards */
+.card {
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  border: none;
+}
+
+/* Inputs */
+.form-control {
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  border-color: var(--tg-theme-secondary-bg-color);
+}
+
+.form-control:focus {
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  border-color: var(--tg-theme-button-color);
+}
+
+/* Navigation */
+.nav-link {
+  color: var(--tg-theme-text-color);
+}
+
+.nav-link.active {
+  color: var(--tg-theme-button-color);
+}
+
+/* Footer padding */
+body {
+  padding-bottom: 70px;
+}
