@@ -38,19 +38,24 @@ if [ -z "$GHCR_TOKEN" ]; then
     echo ""
 fi
 
-# Определение username из токена
+# Запрашиваем username у пользователя (надёжнее чем API)
 if [ -z "$GITHUB_OWNER" ]; then
-    print_info "Определяем GitHub username..."
-    GITHUB_OWNER=$(curl -s -H "Authorization: token $GHCR_TOKEN" \
-      https://api.github.com/user | grep -o '"login":"[^"]*"' | cut -d'"' -f4)
-
-    if [ -z "$GITHUB_OWNER" ]; then
-        print_error "Не удалось определить GitHub username"
-        exit 1
+    if [ -f .env ]; then
+        source .env
     fi
-
-    print_info "GitHub username: $GITHUB_OWNER"
+    
+    if [ -z "$GITHUB_OWNER" ]; then
+        echo ""
+        read -p "Введите ваш GitHub username: " GITHUB_OWNER
+    fi
 fi
+
+if [ -z "$GITHUB_OWNER" ]; then
+    print_error "GitHub username не указан"
+    exit 1
+fi
+
+print_info "GitHub username: $GITHUB_OWNER"
 
 # Логин в GHCR
 print_info "Выполняем вход в GitHub Container Registry..."
@@ -88,6 +93,11 @@ REDIS_PASSWORD=change-me
 JWT_SECRET_KEY=change-me
 EOF
         print_warning "Не забудьте заполнить остальные переменные в .env!"
+    else
+        # Обновляем .env если GITHUB_OWNER не был установлен
+        if ! grep -q "^GITHUB_OWNER=" .env; then
+            echo "GITHUB_OWNER=$GITHUB_OWNER" >> .env
+        fi
     fi
 else
     print_error "❌ Ошибка входа в GHCR"
