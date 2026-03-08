@@ -58,15 +58,30 @@
 
 ### Шаг 2: Аутентификация в GHCR
 
+**Способ A: Через скрипт (рекомендуется)**
+
 ```bash
-# Способ 1: Через скрипт
+# Скрипт запросит токен и username
 ./scripts/ghcr-login.sh
 
-# Способ 2: Через Makefile.sh
+# Или через Makefile.sh
 ./Makefile.sh ghcr-login
+```
 
-# Способ 3: Вручную
-echo YOUR_GITHUB_TOKEN | docker login ghcr.io -u YOUR_USERNAME --password-stdin
+**Способ B: Через переменные окружения**
+
+```bash
+export GITHUB_OWNER=yourusername
+export GHCR_TOKEN=ghp_yourtoken
+echo $GHCR_TOKEN | docker login ghcr.io -u $GITHUB_OWNER --password-stdin
+```
+
+**Способ C: Через .env файл**
+
+```bash
+cp .env.example .env
+nano .env  # заполните GITHUB_OWNER и GHCR_TOKEN
+./scripts/ghcr-login.sh
 ```
 
 ### Шаг 3: Запуск с образами из GHCR
